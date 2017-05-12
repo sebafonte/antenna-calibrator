@@ -4,7 +4,8 @@
 #include <getopt.h>
 #include <sys/time.h>
 #include <rtl-sdr.h>
-
+#include <AbsoluteCalibrator.cpp>
+#include <RtlSource.cpp>
 
 int main(int argc, char **argv) {
 	// Check parameters
@@ -13,25 +14,8 @@ int main(int argc, char **argv) {
 
 	// Calibrate antenna
 	
+	
+	// Print report
+	
 }
 
-/* AbsoluteCalibrator calibrates giving a full round to the antenna and getting the maximum mean amplitude in the given deltaTime */
-public class AbsoluteCalibrator {
-public:
-	public AbsoluteCalibrator(char * device, int frequency, int bandwith, int deltaTime, int time);
-
-	bool Calibrate(int maxTime) {
-		// Set initial position
-		
-		// Read signal strength
-		
-		// 
-	}
-}
-
-public class RtlSource {
-public:
-	float ReadMeanAmplitude(int frequency, int bandwith, int deltaTime) {
-		
-	}
-}
