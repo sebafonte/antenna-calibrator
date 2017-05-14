@@ -17,12 +17,13 @@ int main(int argc, char **argv) {
 		// Frequency
 		// BW
 		// deltaTime
-		// Device: serial, default, index
-		// Source: rtl, usrp
+		// Source Spec: serial, default, index
+		// Source Type: rtl, usrp
+		// Serial port for antenna mover
 		// Mode: mean, filter:FILTERSPEC
 
 	// Instanciate source
-	AbsoluteCalibrator *calibrator = new AbsoluteCalibrator(frequency, bandwidth, deltaTime);
+	AbsoluteCalibrator *calibrator = new AbsoluteCalibrator(frequency, bandwidth, deltaTime, (char *) "/dev/ttyUSB0");
 	
 	// Calibrate antenna
 	float maxValue; 

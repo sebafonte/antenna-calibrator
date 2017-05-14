@@ -8,11 +8,11 @@ public:
 	RtlSource *Source;
 
 
-	AbsoluteCalibrator(double frequency, int bandwidth, int deltaTime) {
+	AbsoluteCalibrator(double frequency, int bandwidth, int deltaTime, char * port) {
 		Frequency = frequency;
 		Bandwidth = bandwidth;
 		DeltaTime = deltaTime;	
-		Mover = new AntennaMover();
+		Mover = new AntennaMover(port);
 		Source = RtlSource::CreateDefault();
 	}
 	
@@ -26,6 +26,9 @@ public:
 		int maxAngle = 0;
 		int delta = 9.0;
 		int lastPosition=0;
+
+		// Set center frequency and discard data
+		Source->SetFrequency(Frequency);
 
 		// Set initial position
 		SetInitialPosition();

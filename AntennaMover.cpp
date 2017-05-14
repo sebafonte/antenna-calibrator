@@ -7,8 +7,10 @@
 
 class AntennaMover {
 protected:
+	char * Port;
+
 	int InitializePort() {
-		int USB = open( "/dev/ttyUSB0", O_RDWR| O_NOCTTY );
+		int USB = open(Port, O_RDWR| O_NOCTTY );
 
 		struct termios tty;
 		struct termios tty_old;
@@ -50,6 +52,10 @@ protected:
 	}
 
 public:
+	AntennaMover(char * port) {
+		Port = port;		
+	}
+
 	void Move(int angle) {
 		// Moving angle
 		printf("Moving ANGLE: %d\n", angle);

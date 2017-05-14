@@ -3,7 +3,8 @@ const int LENGTH_PRODUCT = 256;
 const int LENGTH_SERIAL = 256;
 const int SAMPLE_RATE = 250000;
 const int MAX_SECONDS = 8;
-const int READ_BUFFER_LENGTH = SAMPLE_RATE * MAX_SECONDS;
+//const int READ_BUFFER_LENGTH = SAMPLE_RATE * MAX_SECONDS;
+const int READ_BUFFER_LENGTH = 4096;
 
 
 class RtlSource {
@@ -22,6 +23,10 @@ public:
 		RtlSource * source = new RtlSource();
 		source->OpenBySerial(serialName);
 		return source;
+	}
+	
+	~RtlSource() {
+		CloseRtl();
 	}
 	
 	// Object methods
@@ -45,26 +50,35 @@ public:
 		char buffer[READ_BUFFER_LENGTH];
 		int len=0;
 		int result = rtlsdr_read_sync(Device, &buffer, READ_BUFFER_LENGTH, &len);
-		int mean=0;
+		int sum=0;
 
 		// Calculate mean amplitude
 		for (int i=0; i< len; i++) {
-			mean += buffer[i];
+			sum += buffer[i];
 		}
-
-		printf("Readed samples: %d - Mean: %d\n", len, mean / READ_BUFFER_LENGTH);
-		return mean / READ_BUFFER_LENGTH;
+		
+		int mean = sum / READ_BUFFER_LENGTH;
+		printf("Readed samples: %d - Mean: %d\n", len, mean);
+		return mean;
 	}
 
 	void CloseRtl() {	
 		if (Device)
 			rtlsdr_close(Device);
 	}
+
+	void SetFrequency(double Frequency) {
+		printf("Center frequency: %f\n", (float) Frequency);
+
+		rtlsdr_set_center_freq(Device, Frequency);		
+		rtlsdr_read_sync(Device, NULL, READ_BUFFER_LENGTH, NULL);
+		usleep(5000);
+	}
 	
 protected:
 	void Open(int index) {
 		rtlsdr_open(&Device, index);
-		rtlsdr_get_device_usb_strings(0, manufacturer, product, serial);
+		rtlsdr_get_device_usb_strings(index, manufacturer, product, serial);
 		rtlsdr_set_sample_rate(Device, SAMPLE_RATE);
 		rtlsdr_set_agc_mode(Device, 1);
 
@@ -73,12 +87,4 @@ protected:
 		printf("Product: %s\n", product);
 		printf("Serial: %s\n", serial);
 	}
-	
-/*	void InitializeRtlSdr() {
-		rtlsdr_open(Device, DeviceIndex());
-		//rtlsdr_set_tuner_if_gain();
-		//rtlsdr_set_tuner_gain_mode();
-		rtlsdr_set_sample_rate(Device, SAMPLE_RATE);
-		rtlsdr_set_agc_mode(Device, 1);
-	}*/
 };
