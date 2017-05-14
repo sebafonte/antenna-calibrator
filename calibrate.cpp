@@ -4,13 +4,32 @@
 #include <getopt.h>
 #include <sys/time.h>
 #include <rtl-sdr.h>
-#include <AbsoluteCalibrator.cpp>
-#include <RtlSource.cpp>
+
+#include "AntennaMover.cpp"
+#include "RtlSource.cpp"
+#include "AbsoluteCalibrator.cpp"
+
 
 int main(int argc, char **argv) {
+	int frequency=400000, bandwidth=1200, deltaTime=1000;
+
 	// Check parameters
+		// Frequency
+		// BW
+		// deltaTime
+		// Device: serial, default, index
+		// Source: rtl, usrp
+		// Mode: mean, filter:FILTERSPEC
+
 	// Instanciate source
+	AbsoluteCalibrator *calibrator = new AbsoluteCalibrator(frequency, bandwidth, deltaTime);
+	
 	// Calibrate antenna
+	float maxValue; 
+	int maxAngle;
+	calibrator->Calibrate(5000, &maxAngle, &maxValue);
+
 	// Print report
+	
 }
 
