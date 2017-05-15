@@ -48,17 +48,17 @@ public:
 	
 	float ReadMeanAmplitude(int frequency, int bandwith, int deltaTime) {
 		char buffer[READ_BUFFER_LENGTH];
-		int len=0;
+		int len=0, sum=0;
 		int result = rtlsdr_read_sync(Device, &buffer, READ_BUFFER_LENGTH, &len);
-		int sum=0;
 
 		// Calculate mean amplitude
 		for (int i=0; i< len; i++) {
 			sum += buffer[i];
 		}
-		
+
 		int mean = sum / READ_BUFFER_LENGTH;
-		printf("Readed samples: %d - Mean: %d\n", len, mean);
+		printf("Return: %d - Readed: %d - Mean: %d\n", result, len, mean);
+
 		return mean;
 	}
 
