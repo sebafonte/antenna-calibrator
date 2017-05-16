@@ -9,6 +9,7 @@ const int dirPinX = 5;
 
 void setup() {
   Serial.begin(9600);
+  //Serial.begin(SERIAL_8N1);
   
   incomingValue[0] = 0;
   index = 0;
@@ -26,8 +27,8 @@ void setup() {
 int readAngleCommand() {
   if (Serial.available() > 0) {
     char incomingByte = Serial.read();
-    //Serial.print("Readed char: ");
-    //Serial.println(incomingByte);
+    Serial.print("Readed char: ");
+    Serial.println(incomingByte);
    
     if (!isDigit(incomingByte)) {
       int value = -1;
@@ -36,8 +37,8 @@ int readAngleCommand() {
         incomingValue[index++] = '\n';
         value = atoi(incomingValue);
         
-        //Serial.print("Readed: ");
-        //Serial.println(value);
+        Serial.print("READED: ");
+        Serial.println(value);
       }
       index = 0;
       return value;
@@ -59,6 +60,7 @@ int stepsForAngle(float angle) {
   return angle / degreesPerStep;
 }
 
+/*
 void setRelativePosition(int angle) {
   int steps = stepsForAngle(angle);
 
@@ -90,10 +92,59 @@ void setAbsolutePosition(int angle) {
   for (int i=0; i< steps; i++) {
     digitalWrite(LED_BUILTIN, HIGH);
     digitalWrite(stepPinX, HIGH);
-    delay(1);
+    delay(10);
     digitalWrite(LED_BUILTIN, LOW);
     digitalWrite(stepPinX, LOW);
-    delay(1);
+    delay(10);
+  }
+
+  currentAngle = (float) angle;
+}
+*/
+
+int cuadrante(float angle) {
+  if (angle < 180.0)
+    return 0;
+  else 
+    return 1;
+}
+  
+void setAbsolutePositionNoTwist(int angle) {
+  // Calculate angle
+  float newAngle = angle - currentAngle;
+
+  // Set direction
+  if (newAngle > 0)
+    digitalWrite(dirPinX, LOW);
+  else {
+    newAngle = - newAngle;
+    digitalWrite(dirPinX, HIGH);
+  }
+
+  int steps;
+  if (cuadrante(angle) == cuadrante(currentAngle)) {
+    steps = stepsForAngle(newAngle);
+  }
+  else {
+    float correctedAngle = 360.0 - newAngle;
+    
+    if (digitalRead(dirPinX) == LOW)
+      digitalWrite(dirPinX, HIGH);
+    else {
+      digitalWrite(dirPinX, LOW);
+    }
+    
+    steps = stepsForAngle(correctedAngle);
+  }
+  
+
+  for (int i=0; i< steps; i++) {
+    digitalWrite(LED_BUILTIN, HIGH);
+    digitalWrite(stepPinX, HIGH);
+    delay(10);
+    digitalWrite(LED_BUILTIN, LOW);
+    digitalWrite(stepPinX, LOW);
+    delay(10);
   }
 
   currentAngle = (float) angle;
@@ -104,8 +155,7 @@ void loop() {
   int angle = readAngleCommand();
   
   if (angle > -1) {
-    //setRelativePosition(angle);
-    setAbsolutePosition(angle);
-    delay(1000);
+    setAbsolutePositionNoTwist(angle);
+    delay(500);
   }
 }
