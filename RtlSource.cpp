@@ -4,7 +4,19 @@ const int LENGTH_SERIAL = 256;
 const int SAMPLE_RATE = 250000;
 const int MAX_SECONDS = 8;
 //const int READ_BUFFER_LENGTH = SAMPLE_RATE * MAX_SECONDS;
-const int READ_BUFFER_LENGTH = 4096;
+
+#define DEFAULT_SAMPLE_RATE		2048000
+#define DEFAULT_BUF_LENGTH		(16 * 16384)
+#define MINIMAL_BUF_LENGTH		512
+#define MAXIMAL_BUF_LENGTH		(256 * 16384)
+
+const int READ_BUFFER_LENGTH = MAXIMAL_BUF_LENGTH;
+
+#define MHZ(x)	((x)*1000*1000)
+
+#define PPM_DURATION			10
+#define PPM_DUMP_TIME			5
+
 
 
 class RtlSource {
@@ -77,10 +89,26 @@ public:
 	
 protected:
 	void Open(int index) {
-		rtlsdr_open(&Device, index);
-		rtlsdr_get_device_usb_strings(index, manufacturer, product, serial);
-		rtlsdr_set_sample_rate(Device, SAMPLE_RATE);
-		rtlsdr_set_agc_mode(Device, 1);
+		int result = rtlsdr_get_device_usb_strings(index, manufacturer, product, serial);
+		printf("rtlsdr_get_device_usb_string: %d\n", result);
+		result = rtlsdr_open(&Device, index);
+		printf("rtlsdr_open: %d\n", result);
+
+		result = rtlsdr_set_sample_rate(Device, DEFAULT_SAMPLE_RATE);
+		printf("rtlsdr_set_sample_rate: %d\n", result);
+
+		result = rtlsdr_set_tuner_gain_mode(Device, 1);
+		printf("rtlsdr_set_tuner_gain_mode: %d\n", result);
+		
+		result = rtlsdr_set_tuner_gain(Device, 0);
+		printf("rtlsdr_set_tuner_gain: %d\n", result);
+
+		result = rtlsdr_set_agc_mode(Device, 1);
+		printf("rtlsdr_set_agc_mode: %d\n", result);
+
+		result = rtlsdr_reset_buffer(Device);
+		printf("rtlsdr_reset_buffer: %d\n", result);
+
 
 		// #TODO: refactor
 		printf("Manufacturer: %s\n", manufacturer);
