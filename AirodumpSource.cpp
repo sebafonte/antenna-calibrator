@@ -7,17 +7,21 @@
 
 
 std::string exec(const char* cmd, int waitMilliseconds) {
-    char buffer[128];
+    char buffer[256];
     std::string result = "";
     FILE* pipe = popen(cmd, "r");
+
     if (!pipe) throw std::runtime_error("popen() failed!");
+
     try {
 	// Wait until beacons received
 	usleep(waitMilliseconds);
 	// Read output
         while (!feof(pipe)) {
-            if (fgets(buffer, 128, pipe) != NULL)
+            if (fgets(buffer, 256, pipe) != NULL) {
                 result += buffer;
+		printf("RECEIVED: %s\n", buffer);
+	    }
         }
     } catch (...) {
         pclose(pipe);
@@ -57,9 +61,9 @@ public:
 	}
 
 	virtual void Initialize() {
-		// Initialize WlanDevice in monitor mode using airmon-ng start
+	/*	// Initialize WlanDevice in monitor mode using airmon-ng start
 		char buffer[256];
 		sprintf(buffer, "airmon-ng start %s", WlanDevice);
-		std::string stringValue = exec(buffer, WAIT_TIME_AIRMON_START);
+		std::string stringValue = exec(buffer, WAIT_TIME_AIRMON_START);	*/
 	}	
 };

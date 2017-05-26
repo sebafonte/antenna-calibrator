@@ -20,17 +20,34 @@
 #define SOURCE_AIRODUMP 	2
 
 
+void showUsage(void)
+{
+	fprintf(stderr,
+		"Help:\nantenna-calibrator, a simple calibrator for antennas for rtl-sdr an airodump.\n\n"
+		"There are two usages for this command:\n"
+		"Use for rtl-sdr:\n\tantenna-calibrate -s rtl -d 200 -b 12000 -f 100000000 -p /dev/ttyUSB0\n"
+		"\t-s source: rtl or airodump\n"
+		"\t-d delayMilliseconds\n"
+		"\t-n rtl-sdr device serial number\n"
+		"\t-b bandwidth\n"
+		"\t-f frequency\n"
+		"\t-p antennaPort\n\t]\n"
+		"\n"
+		"Use for airodump-ng:\n\tantenna-calibrate -s airodump -d 5000 -w Speedy-Fibra -m wlan0mon -p dev/ttyUSB0\n"
+		"\t-s source: rtl or airodump\n"
+		"\t-d delayMilliseconds\n"
+		"\t-w Wlan to maximize power reception\n"
+		"\t-m Wlan monitor device\n"
+		"\t-p antennaPort\n\n\n");
+	exit(1);
+}
+
 int SourceMode() {
 	return SOURCE_AIRODUMP;
 }
 
 
 int main(int argc, char **argv) {
-	// Check parameters
-	// Source Spec: serial, default, index
-	// Serial port for antenna mover
-	// Mode: mean, filter:FILTERSPEC
-
 	int sourceMode = -1;	
 	AbstractSource *source = NULL;
 	int c;
@@ -41,9 +58,10 @@ int main(int argc, char **argv) {
 	int deltaTime = -1;
 	char wlanDevice[256] = "";
 	char wlanName[256] = "";
-
+	char antennaPort[256] = "";
 	
-	while ((c = getopt (argc, argv, "s:d:b:f:w:m:")) != -1) {
+
+	while ((c = getopt (argc, argv, "s:d:b:f:w:m:p:")) != -1) {
 		switch (c) {
 		case 's':
 			if (!strcmp(optarg, "rtl"))
@@ -70,10 +88,26 @@ int main(int argc, char **argv) {
 		case 'm':
 			strcpy(wlanDevice, optarg);
 			break;
+		case 'p':
+			strcpy(antennaPort, optarg);
+			break;
 		}	
 	}
 
+	// Check basic parameters
+	if (sourceMode < 0) {
+		printf("No source specified.\n");
+		showUsage();
+		exit(1);
+	}
+	if (!strcmp(antennaPort, "")) {
+		printf("No antenna port specified.\n");		
+		showUsage();
+		exit(1);
+	}
+
 	printf("Source mode: %d.\n", sourceMode);
+	printf("Antenna rotator port: %s.\n\n", antennaPort);
 
 	// Instanciate source
 	if (sourceMode == SOURCE_RTL) {
