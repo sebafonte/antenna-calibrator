@@ -1,21 +1,15 @@
 /* AbsoluteCalibrator calibrates giving a full round to the antenna and getting the maximum mean amplitude in the given deltaTime */
 class AbsoluteCalibrator {
 public:
-	double Frequency;
-	int Bandwidth;
-	int DeltaTime;
 	AntennaMover *Mover;
-	RtlSource *Source;
+	AbstractSource *Source;
 
 
-	AbsoluteCalibrator(double frequency, int bandwidth, int deltaTime, char * port) {
-		Frequency = frequency;
-		Bandwidth = bandwidth;
-		DeltaTime = deltaTime;	
+	AbsoluteCalibrator(char * port, AbstractSource * source) {
 		Mover = new AntennaMover(port);
-		Source = RtlSource::CreateDefault();
+		Source = source;
 	}
-	
+
 	void SetInitialPosition() {
 		Mover->MoveZero();
 	}
@@ -24,22 +18,23 @@ public:
 		float positions[360];
 		float maxValue = -999.0;
 		int maxAngle = 0;
-		int delta = 9.0;
+		int delta = 27.0;
 		int lastPosition=0;
 
 		// Set center frequency and discard data
-		Source->SetFrequency(Frequency);
+		Source->Initialize();
 
 		// Set initial position
-		SetInitialPosition();
+		//SetInitialPosition();
 		
 		for (int i=0; i< 360; i+=delta) {
+			// Move
+			Mover->Move(i);
 			// Read signal strength
-			float value = Source->ReadMeanAmplitude(Frequency, Bandwidth, DeltaTime);
-
+			float value = Source->ReadMeanAmplitude();
+			printf("Amplitude: %f\n", value);
 			// Save strength in a buffer
 			positions[i] = value;
-
 			// Check maximum
 			if (value > maxValue) {
 				maxValue = value;

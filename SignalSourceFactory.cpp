@@ -1,16 +1,21 @@
 
 class SignalSourceFactory {
+public:
 	// Factory methods
-	static RtlSource * CreateDefault(double frequency, int bandwidth, int deltaTime) {
+	static RtlSource * CreateRtlDefault(double frequency, int bandwidth, int deltaTime) {
 		RtlSource * source = new RtlSource(frequency, bandwidth, deltaTime);
 		source->OpenDefault();
 		return source;
 	}
 	
-	static RtlSource * CreateBySerial(const char * serialName, double frequency, int bandwidth, int deltaTime) {
+	static RtlSource * CreateRtlBySerial(const char * serialName, double frequency, int bandwidth, int deltaTime) {
 		RtlSource * source = new RtlSource(frequency, bandwidth, deltaTime);
 		source->OpenBySerial(serialName);
 		return source;
 	}
+
+	static AirodumpSource * CreateAirodumpByName(char * wlanDevice, char * wlanName, int delay) {
+		return new AirodumpSource(wlanDevice, wlanName, delay);
+	}	
 };
 

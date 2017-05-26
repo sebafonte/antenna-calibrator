@@ -69,7 +69,7 @@ public:
 		do {
 		    n_written = write(USB, &cmd[spot], 1);
 		    spot += n_written;
-		} while (cmd[spot-1] != '\r' && n_written > 0);
+		} while (cmd[spot-1] != '\n' && n_written > 0);
 
 		// Close
 		close(USB);

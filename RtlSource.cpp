@@ -19,29 +19,26 @@ const int READ_BUFFER_LENGTH = MAXIMAL_BUF_LENGTH;
 
 
 
-class RtlSource {
+class RtlSource : public AbstractSource {
 	rtlsdr_dev_t  *Device;
 	char manufacturer[LENGTH_MANUFACTURER], product[LENGTH_PRODUCT], serial[LENGTH_SERIAL];
 	
 public:
-	// Factory methods
-	static RtlSource * CreateDefault() {
-		RtlSource * source = new RtlSource();
-		source->OpenDefault();
-		return source;
-	}
+	double Frequency;
+	int Bandwidth, DeltaTime;
+
 	
-	static RtlSource * CreateBySerial(const char * serialName) {
-		RtlSource * source = new RtlSource();
-		source->OpenBySerial(serialName);
-		return source;
+	// Object methods
+	RtlSource(double frequency, int bandwidth, int deltaTime) {
+		Frequency = frequency;
+		Bandwidth = bandwidth;
+		DeltaTime = deltaTime;
 	}
-	
+
 	~RtlSource() {
 		CloseRtl();
 	}
 	
-	// Object methods
 	void OpenDefault() {
 		Open(0);
 	}
@@ -58,7 +55,7 @@ public:
 		}
 	}
 	
-	float ReadMeanAmplitude(int frequency, int bandwith, int deltaTime) {
+	virtual float ReadMeanAmplitude(int frequency, int bandwith, int deltaTime) {
 		char buffer[READ_BUFFER_LENGTH];
 		int len=0, sum=0;
 		int result = rtlsdr_read_sync(Device, &buffer, READ_BUFFER_LENGTH, &len);
@@ -79,7 +76,7 @@ public:
 			rtlsdr_close(Device);
 	}
 
-	void SetFrequency(double Frequency) {
+	virtual void Initialize() {
 		printf("Center frequency: %f\n", (float) Frequency);
 
 		rtlsdr_set_center_freq(Device, Frequency);		
@@ -113,6 +110,6 @@ protected:
 		// #TODO: refactor
 		printf("Manufacturer: %s\n", manufacturer);
 		printf("Product: %s\n", product);
-		printf("Serial: %s\n", serial);
+		printf("Serial: %s\n\n", serial);
 	}
 };
