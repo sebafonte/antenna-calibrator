@@ -35,10 +35,10 @@ void showUsage(void)
 		"\n"
 		"Use for airodump-ng:\n\tantenna-calibrate -s airodump -d 5000 -w Speedy-Fibra -m wlan0mon -p dev/ttyUSB0\n"
 		"\t-s source: rtl or airodump\n"
-		"\t-d delayMilliseconds\n"
+		"\t-d delay to take signal media quality\n"
 		"\t-w Wlan to maximize power reception\n"
 		"\t-m Wlan monitor device\n"
-		"\t-p antennaPort\n\n\n");
+		"\t-p antenna hardware port (chech pungas.space/blog/antenna-controller.html)\n\n\n");
 	exit(1);
 }
 
