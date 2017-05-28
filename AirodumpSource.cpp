@@ -5,42 +5,6 @@
 
 #define WAIT_TIME_AIRMON_START 2000
 
-/*
-#include <pstream.h>
-int exec2()
-{
-  // run a process and create a streambuf that reads its stdout and stderr
-  redi::ipstream proc("./some_command", redi::pstreams::pstdout | redi::pstreams::pstderr);
-  std::string line;
-  std::string result;
-
-  // read child's stdout
-  while (std::getline(proc.out(), line))
-    result += line;
-
-  return result;
-
-  // read child's stderr
-  //while (std::getline(proc.err(), line))
-  //  std::cout << "stderr: " << line << '\n';
-} 
-
-#include <cstdio>
-#include <memory>
-#include <stdexcept>
-#include <array>
-
-std::string exec3(const char* cmd, int waitMilliseconds) {
-    std::array<char, 128> buffer;
-    std::string result;
-    std::shared_ptr<FILE> pipe(popen(cmd, "r"), pclose);
-    if (!pipe) throw std::runtime_error("popen() failed!");
-    while (!feof(pipe.get())) {
-        if (fgets(buffer.data(), 128, pipe.get()) != NULL)
-            result += buffer.data();
-    }
-    return result;
-} */
 
 std::string exec2(std::string cmd, int waitMilliseconds) {
 	std::string data;
@@ -66,40 +30,6 @@ std::string exec2(std::string cmd, int waitMilliseconds) {
 	return data;
 }
 
-
-std::string exec(const char* cmd, int waitMilliseconds) {
-    static char buffer[4096];
-    std::string result = "";
-    FILE* pipe = popen(cmd, "r");
-	
-    if (!pipe) throw std::runtime_error("popen() failed!");
-
-    try {
-	
-	// Read output
-	int value = !feof(pipe);
-   	printf("VALUE FEOF %d\n", value);
-        while (value) {
-  	    // Wait until beacons received
-	    usleep(waitMilliseconds + 1000);
-            if (fgets(buffer, 2048, pipe) != NULL) {
-                result += buffer;
-		printf("RECEIVED: %s\n", buffer);
-	    }
-
-	  //  printf("RECEIVED TOTAL: %s\n", result);
-	    value = !feof(pipe);
-	    printf("VALUE FEOF %d\n", value);
-        }
-    } catch (...) {
-	printf("ERROR CATCH\n");
-        pclose(pipe);
-        throw;
-    }
-    printf("SALE CATCH\n");
-    pclose(pipe);
-    return result;
-}
 
 class AirodumpSource : public AbstractSource {
 	char * WlanDevice, * WlanName;
