@@ -6,12 +6,10 @@
 #include <rtl-sdr.h>
 
 #include "AntennaMover.cpp"
-
 #include "AbstractSource.cpp"
 #include "AirodumpSource.cpp"
 #include "RtlSource.cpp"
 #include "SignalSourceFactory.cpp"
-
 #include "AbsoluteCalibrator.cpp"
 #include "TestCalibrator.cpp"
 
@@ -51,7 +49,6 @@ int main(int argc, char **argv) {
 	int sourceMode = -1;	
 	AbstractSource *source = NULL;
 	int c;
-
 	// Vemos source de datos para determinar otros parametros
 	double frequency = -1.0;
 	int bandwidth = -1;
@@ -107,7 +104,7 @@ int main(int argc, char **argv) {
 	}
 
 	printf("Source mode: %d.\n", sourceMode);
-	printf("Antenna rotator port: %s.\n\n", antennaPort);
+	printf("Antenna rotator port: %s.\n", antennaPort);
 
 	// Instanciate source
 	if (sourceMode == SOURCE_RTL) {
@@ -187,7 +184,6 @@ int main(int argc, char **argv) {
 
 	// Instanciate calibrator
 	AbsoluteCalibrator *calibrator = new AbsoluteCalibrator((char *) "/dev/ttyUSB0", source);
-	//TestCalibrator *calibrator = new TestCalibrator(frequency, bandwidth, deltaTime, (char *) "/dev/ttyUSB0");
 	
 	// Calibrate antenna
 	float maxValue; 
