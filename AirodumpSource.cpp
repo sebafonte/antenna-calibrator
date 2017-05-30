@@ -16,7 +16,10 @@ std::string exec(std::string cmd, int waitMilliseconds) {
 
 	cmd.append(" 2>&1");
 	stream = popen(cmd.c_str(), "r");
-
+	
+	// Print command
+	printf("Command: %s\n", cmd.c_str());
+ 
   	// Wait until beacons received
 	usleep(waitMilliseconds + WAIT_TIME_BEACONS_GUARD);
 
@@ -49,7 +52,7 @@ public:
 		float value = MINIMUM_QUALITY;
 		char buffer[COMMAND_BUFFER_SIZE];
 
-		sprintf(buffer, "timeout -k %e %e airodump-ng %s 2>tempfile.txt ; awk \'START { power = -999 } { if (($12==\"%s\") || ($11==\"%s\") || ($10==\"%s\")) power = $2 } END { print power }\' file.txt", 
+		sprintf(buffer, "timeout -k %e %e airodump-ng %s 2>tempfile.txt ; awk \'START { power = -999 } { if (($12==\"%s\") || ($11==\"%s\") || ($10==\"%s\")) power = $2 } END { print power }\' tempfile.txt", 
 			Delay / 1000.0, Delay / 1000.0, WlanDevice, WlanName, WlanName, WlanName);
 
 		// Execute airodump, waiting some delay and get dbs for SSID

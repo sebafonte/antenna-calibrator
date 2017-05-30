@@ -1,4 +1,6 @@
-/* AbsoluteCalibrator calibrates giving a full round to the antenna and getting the maximum mean amplitude in the given deltaTime */
+
+/* TestCalibrator just tests antenna movement with some fixed positions */
+
 class TestCalibrator {
 public:
 	double Frequency;
@@ -15,14 +17,11 @@ public:
 		Mover = new AntennaMover(port);
 		Source = SignalSourceFactory::CreateRtlDefault(frequency, bandwidth, deltaTime);
 	}
-	
-	void SetInitialPosition() {
-		Mover->Move(0);
-	}
 
-	void Calibrate(int maxTime, int *returnMaxAngle, float *returnMaxValue) {
-		Mover->Move(0);
-		usleep(1000);
-		Mover->Move(90);
+	void Calibrate(int deltaAngle) {
+		for (int i=0; i< 10; i++) {
+			Mover->Move(i * 90);
+			usleep(1000);
+		}
 	}
 };
