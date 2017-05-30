@@ -3,13 +3,12 @@
 #include <stdio.h>
 #include <string>
 
-#define WAIT_TIME_AIRMON_START 		2000
 #define WAIT_TIME_BEACONS_GUARD 	1000
 #define AIRODUMP_RESULT_BUFFER_SIZE	256
 #define COMMAND_BUFFER_SIZE		2048
 
 
-std::string exec(std::string cmd, int waitMilliseconds) {
+std::string exec2(std::string cmd, int waitMilliseconds) {
 	std::string data;
 	FILE * stream;
 	char buffer[AIRODUMP_RESULT_BUFFER_SIZE];
@@ -26,9 +25,12 @@ std::string exec(std::string cmd, int waitMilliseconds) {
 	// Read airodump result
 	if (stream) {
 		while (!feof(stream)) 
-			if (fgets(buffer, AIRODUMP_RESULT_BUFFER_SIZE, stream) != NULL)
+			if (fgets(buffer, AIRODUMP_RESULT_BUFFER_SIZE, stream) != NULL) {
+				printf("Part: %s\n", buffer);			
 				data.append(buffer);
-		
+			}
+
+		printf("Result: %s\n", data.c_str());		
 		pclose(stream);
 	}
 
@@ -56,7 +58,7 @@ public:
 			Delay / 1000.0, Delay / 1000.0, WlanDevice, WlanName, WlanName, WlanName);
 
 		// Execute airodump, waiting some delay and get dbs for SSID
-		std::string stringValue = exec(buffer, Delay);
+		std::string stringValue = exec2(buffer, Delay);
 		const char *charValue = stringValue.c_str();
 		
 		// If power report has been found, use it

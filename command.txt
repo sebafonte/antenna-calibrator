@@ -1,0 +1,6 @@
+;; Airodump command to get DB for a specified ESSID
+
+timeout -k 8.000000e+00 8.000000e+00 airodump-ng mon0 2>tempfile.txt ; awk 'START { power = -999 } { if (($12=="Star") || ($11=="Star") || ($10=="Star")) power = $2 } END { print power }' tempfile.txt 2>&1
+
+
+
