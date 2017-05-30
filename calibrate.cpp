@@ -10,12 +10,13 @@
 #include "AirodumpSource.cpp"
 #include "RtlSource.cpp"
 #include "SignalSourceFactory.cpp"
-#include "AbsoluteCalibrator.cpp"
+#include "BasicCalibrator.cpp"
 #include "TestCalibrator.cpp"
 
 
 #define SOURCE_RTL 		1
 #define SOURCE_AIRODUMP 	2
+#define MAX_TIMEOUT		5000
 
 
 void showUsage(void)
@@ -183,12 +184,12 @@ int main(int argc, char **argv) {
 	}
 
 	// Instanciate calibrator
-	AbsoluteCalibrator *calibrator = new AbsoluteCalibrator((char *) "/dev/ttyUSB0", source);
+	BasicCalibrator *calibrator = new BasicCalibrator((char *) "/dev/ttyUSB0", source);
 	
 	// Calibrate antenna
 	float maxValue; 
 	int maxAngle;
-	calibrator->Calibrate(5000, &maxAngle, &maxValue);
+	calibrator->Calibrate(MAX_TIMEOUT, &maxAngle, &maxValue);
 
 	// Print report
 	

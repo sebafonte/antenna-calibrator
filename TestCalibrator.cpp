@@ -17,7 +17,7 @@ public:
 	}
 	
 	void SetInitialPosition() {
-		Mover->MoveZero();
+		Mover->Move(0);
 	}
 
 	void Calibrate(int maxTime, int *returnMaxAngle, float *returnMaxValue) {

@@ -8,6 +8,7 @@
 class AntennaMover {
 protected:
 	char * Port;
+	int CurrentAngle;
 
 	int InitializePort() {
 		int USB = open(Port, O_RDWR| O_NOCTTY );
@@ -73,9 +74,13 @@ public:
 
 		// Close
 		close(USB);
+		
+		// Store current setted angle
+		CurrentAngle = angle;
 	}
-
-	void MoveZero() {
-		Move(0);
+	
+	int GetCurrentAngle() {
+		return CurrentAngle;
 	}
 };
+
