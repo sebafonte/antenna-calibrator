@@ -1,7 +1,6 @@
-const float MINIMUM_QUALITY = -999.0;
-
 
 /* BasicCalibrator calibrates giving a full round to the antenna and getting the maximum mean amplitude in the given deltaTime */
+
 class BasicCalibrator {
 public:
 	BasicCalibrator(char * port, AbstractSource * source) {
@@ -9,22 +8,22 @@ public:
 		Source = source;
 	}
 
-	void Calibrate(int maxTime, int *returnMaxAngle, float *returnMaxValue) {
+	void Calibrate(int deltaAngle) {
 		float positions[360];
 		float maxValue = MINIMUM_QUALITY;
 		int maxAngle = 0;
-		int delta = 27.0;
 		int lastPosition = 0;
+		float value;
 
 		// Set center frequency and discard data
 		Source->Initialize();
 		
-		for (int i=0; i< 360; i+=delta) {
+		for (int i=0; i< 360; i+=deltaAngle) {
 			// Move
 			Mover->Move(i);
 			// Read signal strength
-			float value = Source->ReadMeanAmplitude();
-			printf("Angle: %f - Amplitude: %f\n", (float) i, value);
+			value = GetQualityValue();
+			printf("Angle: %d - Amplitude: %f\n", i, value);
 			// Save strength in a buffer
 			positions[i] = value;
 			// Check maximum
@@ -37,20 +36,23 @@ public:
 		}
 
 		// Move to the position with maximum amplitude
-		float value = Source->ReadMeanAmplitude();
-		printf("\nMoved to: %f - Last: %f - Current: %f\n", (float) maxAngle, maxValue, value);
+		value = GetQualityValue();
 		Mover->Move(maxAngle);
 
 		// Save last quality value
 		LastQualityValue = value;
 	}
 
-	float GetCurrentAngle() {
+	int GetCurrentAngle() {
 		return Mover->GetCurrentAngle();
 	}
 
 	float GetLastQualityValue() {
 		return LastQualityValue;
+	}
+
+	float GetQualityValue() {
+		return Source->ReadMeanAmplitude();
 	}
 
 protected:

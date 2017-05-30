@@ -5,6 +5,8 @@
 #include <sys/time.h>
 #include <rtl-sdr.h>
 
+const float MINIMUM_QUALITY = -999.0;
+
 #include "AntennaMover.cpp"
 #include "AbstractSource.cpp"
 #include "AirodumpSource.cpp"
@@ -13,10 +15,10 @@
 #include "BasicCalibrator.cpp"
 #include "TestCalibrator.cpp"
 
-
 #define SOURCE_RTL 		1
 #define SOURCE_AIRODUMP 	2
 #define MAX_TIMEOUT		5000
+#define MAX_NAMES_BUFFER_SIZE	256
 
 
 void showUsage(void)
@@ -27,14 +29,16 @@ void showUsage(void)
 		"Use for rtl-sdr:\n\tantenna-calibrate -s rtl -d 200 -b 12000 -f 100000000 -p /dev/ttyUSB0\n"
 		"\t-s source: rtl or airodump\n"
 		"\t-d delayMilliseconds\n"
+		"\t-a moving angle delta\n"
 		"\t-n rtl-sdr device serial number\n"
 		"\t-b bandwidth\n"
 		"\t-f frequency\n"
 		"\t-p antennaPort\n\t]\n"
 		"\n"
-		"Use for airodump-ng:\n\tantenna-calibrate -s airodump -d 5000 -w Speedy-Fibra -m wlan0mon -p dev/ttyUSB0\n"
+		"Use for airodump-ng:\n\tantenna-calibrate -s airodump -d 5000 -w Speedy-Fibra -m mon0 -p dev/ttyUSB0\n"
 		"\t-s source: rtl or airodump\n"
 		"\t-d delay to take signal media quality\n"
+		"\t-a moving angle delta\n"
 		"\t-w Wlan to maximize power reception\n"
 		"\t-m Wlan monitor device\n"
 		"\t-p antenna hardware port (chech pungas.space/blog/antenna-controller.html)\n\n\n");
@@ -50,16 +54,16 @@ int main(int argc, char **argv) {
 	int sourceMode = -1;	
 	AbstractSource *source = NULL;
 	int c;
-	// Vemos source de datos para determinar otros parametros
 	double frequency = -1.0;
 	int bandwidth = -1;
 	int deltaTime = -1;
-	char wlanDevice[256] = "";
-	char wlanName[256] = "";
-	char antennaPort[256] = "";
+	int deltaAngle = -1;
+	char wlanDevice[MAX_NAMES_BUFFER_SIZE] = "";
+	char wlanName[MAX_NAMES_BUFFER_SIZE] = "";
+	char antennaPort[MAX_NAMES_BUFFER_SIZE] = "";
 	
-
-	while ((c = getopt (argc, argv, "s:d:b:f:w:m:p:")) != -1) {
+	// Check input parameters
+	while ((c = getopt (argc, argv, "s:d:b:f:w:m:p:a:")) != -1) {
 		switch (c) {
 		case 's':
 			if (!strcmp(optarg, "rtl"))
@@ -89,6 +93,9 @@ int main(int argc, char **argv) {
 		case 'p':
 			strcpy(antennaPort, optarg);
 			break;
+		case 'a':
+			deltaAngle = atoi(optarg);
+			break;
 		}	
 	}
 
@@ -100,6 +107,11 @@ int main(int argc, char **argv) {
 	}
 	if (!strcmp(antennaPort, "")) {
 		printf("No antenna port specified.\n");		
+		showUsage();
+		exit(1);
+	}
+	if (deltaAngle < 0) {
+		printf("No delta angle specified.\n");
 		showUsage();
 		exit(1);
 	}
@@ -187,11 +199,12 @@ int main(int argc, char **argv) {
 	BasicCalibrator *calibrator = new BasicCalibrator((char *) "/dev/ttyUSB0", source);
 	
 	// Calibrate antenna
-	float maxValue; 
-	int maxAngle;
-	calibrator->Calibrate(MAX_TIMEOUT, &maxAngle, &maxValue);
+	calibrator->Calibrate(deltaAngle);
 
 	// Print report
-	
+	int currentAngle = calibrator->GetCurrentAngle();
+	float lastQualityValue = calibrator->GetLastQualityValue();
+	float qualityValue = calibrator->GetQualityValue();
+	printf("\nSetted at: %d° - Last: %f - Current: %f\n\n", currentAngle, lastQualityValue, qualityValue);
 }
 
