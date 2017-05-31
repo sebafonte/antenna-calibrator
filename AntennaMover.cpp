@@ -11,7 +11,7 @@ protected:
 	int CurrentAngle;
 
 	int InitializePort() {
-		int USB = open(Port, O_RDWR| O_NOCTTY );
+		int USB = open(Port, O_RDWR| O_NOCTTY);
 
 		struct termios tty;
 		struct termios tty_old;
@@ -63,14 +63,14 @@ public:
 		// Initialize port
 		int USB = InitializePort();
 		// Write
-		char cmd[] = "000\n";
-		sprintf(cmd, "%d\n", angle);
+		char cmd[] = "000\r";
+		sprintf(cmd, "%d\r", angle);
 		int n_written = 0, spot = 0;
 
 		do {
 		    n_written = write(USB, &cmd[spot], 1);
 		    spot += n_written;
-		} while (cmd[spot-1] != '\n' && n_written > 0);
+		} while (cmd[spot-1] != '\r' && n_written > 0);
 
 		// Close
 		close(USB);
@@ -82,5 +82,9 @@ public:
 	int GetCurrentAngle() {
 		return CurrentAngle;
 	}
+
+	// #TODO: 
+/*	int SetZero() {		
+	}*/
 };
 

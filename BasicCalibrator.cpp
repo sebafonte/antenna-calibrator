@@ -17,7 +17,7 @@ public:
 
 		// Set center frequency and discard data
 		Source->Initialize();
-		
+
 		for (int i=0; i< 360; i+=deltaAngle) {
 			// Move
 			Mover->Move(i);
