@@ -43,14 +43,16 @@ class AirodumpSource : public AbstractSource {
 	int Delay;
 	
 public:	
+	virtual void metodo() { printf("Airodump\n"); };
+
 	// Object methods
-	AirodumpSource(char * wlanDevice, char * wlanName, int delay) {
+	void InitializeAirodumpSource(char * wlanDevice, char * wlanName, int delay) {
 		WlanDevice = wlanDevice;
 		WlanName = wlanName;
 		Delay = delay;
 	}
 
-	virtual float ReadMeanAmplitude() {
+	virtual float ReadSignalQuality() {
 		float value = MINIMUM_QUALITY;
 		char buffer[COMMAND_BUFFER_SIZE];
 		

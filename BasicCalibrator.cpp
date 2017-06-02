@@ -52,7 +52,7 @@ public:
 	}
 
 	float GetQualityValue() {
-		return Source->ReadMeanAmplitude();
+		return Source->ReadSignalQuality();
 	}
 
 protected:

@@ -9,30 +9,32 @@ const int MAX_SECONDS = 8;
 #define DEFAULT_BUF_LENGTH		(16 * 16384)
 #define MINIMAL_BUF_LENGTH		512
 #define MAXIMAL_BUF_LENGTH		(256 * 16384)
+#define MHZ(x)	((x)*1000*1000)
+#define PPM_DURATION			10
+#define PPM_DUMP_TIME			5
 
 const int READ_BUFFER_LENGTH = MAXIMAL_BUF_LENGTH;
 
-#define MHZ(x)	((x)*1000*1000)
-
-#define PPM_DURATION			10
-#define PPM_DUMP_TIME			5
+#include <complex>
+typedef std::complex<float> complex;
 
 
 
 class RtlSource : public AbstractSource {
 	rtlsdr_dev_t  *Device;
 	char manufacturer[LENGTH_MANUFACTURER], product[LENGTH_PRODUCT], serial[LENGTH_SERIAL];
-	
-public:
+	pthread_mutex_t	m_u_mutex;
 	double Frequency;
 	int Bandwidth, DeltaTime;
+public:
+	virtual void metodo() { printf("Rtl\n"); };
 
-	
 	// Object methods
-	RtlSource(double frequency, int bandwidth, int deltaTime) {
+	void InitializeRtlSource(double frequency, int bandwidth, int deltaTime) {
 		Frequency = frequency;
 		Bandwidth = bandwidth;
 		DeltaTime = deltaTime;
+		pthread_mutex_init(&m_u_mutex, 0);
 	}
 
 	~RtlSource() {
@@ -55,25 +57,31 @@ public:
 		}
 	}
 	
-	virtual float ReadMeanAmplitude(int frequency, int bandwith, int deltaTime) {
-		char buffer[READ_BUFFER_LENGTH];
-		int len=0, sum=0;
-		int result = rtlsdr_read_sync(Device, &buffer, READ_BUFFER_LENGTH, &len);
+	virtual float ReadSignalQuality() {
+		unsigned char buffer[READ_BUFFER_LENGTH];
+		int len = 0, j;
+		complex value;
+		float sum = 0.0;
 
-		// Calculate mean amplitude
-		for (int i=0; i< len; i++) {
-			sum += buffer[i];
+		//pthread_mutex_lock(&m_u_mutex);
+		int result = rtlsdr_read_sync(Device, &buffer, READ_BUFFER_LENGTH, &len);
+		//pthread_mutex_unlock(&m_u_mutex);
+
+		if (result < 0) {
+			printf("Error reading rtlsdr source.\n");
+			return -998.0;		
 		}
 
-		int mean = sum / READ_BUFFER_LENGTH;
-		printf("Return: %d - Readed: %d - Mean: %d\n", result, len, mean);
+		// Sum complex abs
+		for(j=0; j< len; j+=2) {
+			value = complex((buffer[j] - 127) * 256, (buffer[j + 1] - 127) * 256);
+			sum += abs(value);
+		}
+
+		float mean = sum / len;
+		printf("Returned: %d - Readed: %d - Mean: %f\n", result, len, mean);
 
 		return mean;
-	}
-
-	void CloseRtl() {	
-		if (Device)
-			rtlsdr_close(Device);
 	}
 
 	virtual void Initialize() {
@@ -82,6 +90,12 @@ public:
 		rtlsdr_set_center_freq(Device, Frequency);		
 		rtlsdr_read_sync(Device, NULL, READ_BUFFER_LENGTH, NULL);
 		usleep(5000);
+	}
+
+
+	void CloseRtl() {	
+		if (Device)
+			rtlsdr_close(Device);
 	}
 	
 protected:
