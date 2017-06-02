@@ -63,9 +63,9 @@ public:
 		complex value;
 		float sum = 0.0;
 
-		//pthread_mutex_lock(&m_u_mutex);
+		pthread_mutex_lock(&m_u_mutex);
 		int result = rtlsdr_read_sync(Device, &buffer, READ_BUFFER_LENGTH, &len);
-		//pthread_mutex_unlock(&m_u_mutex);
+		pthread_mutex_unlock(&m_u_mutex);
 
 		if (result < 0) {
 			printf("Error reading rtlsdr source.\n");
