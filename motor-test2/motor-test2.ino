@@ -33,7 +33,17 @@ void loop() {
   delay(2);
   digitalWrite(stepPinX, LOW);
   }
+
+  digitalWrite(dirPinX, LOW);
   
+  for (int i=0; i < 661; i++) {
+  delay(2);
+  digitalWrite(stepPinX, HIGH);
+  delay(2);
+  digitalWrite(stepPinX, LOW);
+  }
+
+    
  /* digitalWrite(dirPinX, LOW);
   for (int i=0; i < 800; i++) {
   delay(1);

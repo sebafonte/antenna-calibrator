@@ -2,7 +2,8 @@ char incomingValue[4];
 int index;
 int currentAngle;
 int value=0;
-float degreesPerStep = 1.8;
+//float degreesPerStep = 1.8;
+float degreesPerStep = 360.0 / 661.0;
 const int stepPinX = 3; 
 const int dirPinX = 5; 
 
