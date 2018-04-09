@@ -1,19 +1,16 @@
+/* MOTOR TEST
+ *  
+ *  Antenna should give on round in a anticlock wise direction, 
+ *  then another round back in clockwise direction to get back
+ *  on the beginning.
+ */
 
-int index;
-int currentPosition;
-int value=0;
-
-const int stepPinX = 3; 
-const int dirPinX = 5; 
-
-
+const int stepPinX = 8; 
+const int dirPinX = 7; 
+const int STEPSPORVUELTA = 661;
 
 void setup() {
-  Serial.begin(9600);
-  
-  index = 0;
-  currentPosition = 0;
-
+ Serial.begin(9600);
   pinMode(stepPinX, OUTPUT); 
   pinMode(dirPinX, OUTPUT);
   pinMode(LED_BUILTIN, OUTPUT);
@@ -24,23 +21,32 @@ void setup() {
 
 void loop() {
   digitalWrite(dirPinX, HIGH);
-
   digitalWrite(dirPinX, HIGH);
+  digitalWrite(LED_BUILTIN, LOW);  
+  delay(2500);
+  digitalWrite(LED_BUILTIN, HIGH);
   
-  for (int i=0; i < 661; i++) {
-  delay(2);
-  digitalWrite(stepPinX, HIGH);
-  delay(2);
-  digitalWrite(stepPinX, LOW);
+  for (int i=0; i < STEPSPORVUELTA; i++) {
+    delay(25);
+    digitalWrite(stepPinX, HIGH);
+    delay(25);
+    digitalWrite(stepPinX, LOW);
   }
   
- /* digitalWrite(dirPinX, LOW);
-  for (int i=0; i < 800; i++) {
-  delay(1);
-  digitalWrite(stepPinX, LOW);
-  delay(1);
-  digitalWrite(stepPinX, HIGH);
-  }*/
+  digitalWrite(LED_BUILTIN, LOW);
+  digitalWrite(dirPinX, LOW);
+  digitalWrite(dirPinX, LOW);
+  delay(2500);
+  digitalWrite(LED_BUILTIN, HIGH);
 
-  delay(5000);
+  for (int i=0; i < STEPSPORVUELTA; i++) {
+    delay(25);
+    digitalWrite(stepPinX, HIGH);
+    delay(25);
+    digitalWrite(stepPinX, LOW);
+  }
+
+  // Enganchate aca para apagar / resetear la posicion  
+  digitalWrite(LED_BUILTIN, LOW);
+  delay(2500);
 }
