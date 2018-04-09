@@ -4,9 +4,9 @@ int currentAngle;
 int value=0;
 //float degreesPerStep = 1.8;
 float degreesPerStep = 360.0 / 661.0;
-const int stepPinX = 3; 
-const int dirPinX = 5; 
-
+const int stepPinX = 8; 
+const int dirPinX = 7; 
+const int stepDelay = 20;
 
 void setup() {
   Serial.begin(9600);
@@ -61,48 +61,6 @@ int stepsForAngle(float angle) {
   return angle / degreesPerStep;
 }
 
-/*
-void setRelativePosition(int angle) {
-  int steps = stepsForAngle(angle);
-
-  for (int i=0; i< steps; i++) {
-    digitalWrite(LED_BUILTIN, HIGH);
-    digitalWrite(stepPinX, HIGH);
-    delay(1);
-    digitalWrite(LED_BUILTIN, LOW);
-    digitalWrite(stepPinX, LOW);
-    delay(1);
-  }
-}
-
-void setAbsolutePosition(int angle) {
-  // Calculate angle
-  float newAngle = angle - currentAngle;
-
-  // Set direction
-  if (newAngle > 0)
-    digitalWrite(dirPinX, LOW);
-  else {
-    newAngle = - newAngle;
-    digitalWrite(dirPinX, HIGH);
-  }
-  
-  // Step
-  int steps = stepsForAngle(newAngle);
-
-  for (int i=0; i< steps; i++) {
-    digitalWrite(LED_BUILTIN, HIGH);
-    digitalWrite(stepPinX, HIGH);
-    delay(10);
-    digitalWrite(LED_BUILTIN, LOW);
-    digitalWrite(stepPinX, LOW);
-    delay(10);
-  }
-
-  currentAngle = (float) angle;
-}
-*/
-
 int cuadrante(float angle) {
   if (angle < 180.0)
     return 0;
@@ -131,21 +89,19 @@ void setAbsolutePositionNoTwist(int angle) {
     
     if (digitalRead(dirPinX) == LOW)
       digitalWrite(dirPinX, HIGH);
-    else {
+    else
       digitalWrite(dirPinX, LOW);
-    }
     
     steps = stepsForAngle(correctedAngle);
   }
-  
 
   for (int i=0; i< steps; i++) {
     digitalWrite(LED_BUILTIN, HIGH);
     digitalWrite(stepPinX, HIGH);
-    delay(10);
+    delay(stepDelay);
     digitalWrite(LED_BUILTIN, LOW);
     digitalWrite(stepPinX, LOW);
-    delay(10);
+    delay(stepDelay);
   }
 
   currentAngle = (float) angle;
