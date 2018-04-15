@@ -6,7 +6,7 @@ int value=0;
 float degreesPerStep = 360.0 / 661.0;
 const int stepPinX = 8; 
 const int dirPinX = 7; 
-const int stepDelay = 20;
+const int stepDelay = 25;
 
 void setup() {
   Serial.begin(9600);
