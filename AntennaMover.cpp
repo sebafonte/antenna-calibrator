@@ -58,6 +58,8 @@ public:
 	}
 
 	void Move(int angle) {
+	//	return;
+
 		// Moving angle
 		printf("Moving ANGLE: %d\n", angle);
 		// Initialize port

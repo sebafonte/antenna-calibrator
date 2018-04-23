@@ -1,19 +1,19 @@
+#define DEFAULT_SAMPLE_RATE		2048000
+#define DEFAULT_BUF_LENGTH		(16 * 16384)
+#define MINIMAL_BUF_LENGTH		512
+#define MAXIMAL_BUF_LENGTH		(256 * 16384)
+#define PPM_DURATION			10
+#define PPM_DUMP_TIME			5
+
 const int LENGTH_MANUFACTURER = 256;
 const int LENGTH_PRODUCT = 256;
 const int LENGTH_SERIAL = 256;
 const int SAMPLE_RATE = 250000;
 const int MAX_SECONDS = 8;
+const int READ_BUFFER_LENGTH = MAXIMAL_BUF_LENGTH;
 //const int READ_BUFFER_LENGTH = SAMPLE_RATE * MAX_SECONDS;
 
-#define DEFAULT_SAMPLE_RATE		2048000
-#define DEFAULT_BUF_LENGTH		(16 * 16384)
-#define MINIMAL_BUF_LENGTH		512
-#define MAXIMAL_BUF_LENGTH		(256 * 16384)
-#define MHZ(x)	((x)*1000*1000)
-#define PPM_DURATION			10
-#define PPM_DUMP_TIME			5
 
-const int READ_BUFFER_LENGTH = MAXIMAL_BUF_LENGTH;
 
 #include <complex>
 typedef std::complex<float> complex;
@@ -48,12 +48,12 @@ public:
 	void OpenBySerial(const char *serial) {
 		int index = rtlsdr_get_index_by_serial(serial);
 		
-		if (index >= 0) {
+		if (index >= 0)
 			Open(index);
-		}
 		else {
-			// #TODO: show error
 			Device = NULL;
+			printf("No rtl device found.\n");
+			exit(1);
 		}
 	}
 	
@@ -104,24 +104,17 @@ protected:
 		printf("rtlsdr_get_device_usb_string: %d\n", result);
 		result = rtlsdr_open(&Device, index);
 		printf("rtlsdr_open: %d\n", result);
-
 		result = rtlsdr_set_sample_rate(Device, DEFAULT_SAMPLE_RATE);
 		printf("rtlsdr_set_sample_rate: %d\n", result);
-
 		result = rtlsdr_set_tuner_gain_mode(Device, 1);
 		printf("rtlsdr_set_tuner_gain_mode: %d\n", result);
-		
 		result = rtlsdr_set_tuner_gain(Device, 0);
 		printf("rtlsdr_set_tuner_gain: %d\n", result);
-
 		result = rtlsdr_set_agc_mode(Device, 1);
 		printf("rtlsdr_set_agc_mode: %d\n", result);
-
 		result = rtlsdr_reset_buffer(Device);
 		printf("rtlsdr_reset_buffer: %d\n", result);
 
-
-		// #TODO: refactor
 		printf("Manufacturer: %s\n", manufacturer);
 		printf("Product: %s\n", product);
 		printf("Serial: %s\n\n", serial);
