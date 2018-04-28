@@ -3,10 +3,12 @@ int index;
 int currentAngle;
 int value=0;
 //float degreesPerStep = 1.8;
+//float degreesPerStep = 0.54462;     1.8 / 4 
 float degreesPerStep = 360.0 / 661.0;
 const int stepPinX = 8; 
 const int dirPinX = 7; 
-const int stepDelay = 25;
+const int stepDelay = 20;
+const char *endMovementConstant = "k";
 
 void setup() {
   Serial.begin(9600);
@@ -24,6 +26,10 @@ void setup() {
   digitalWrite(stepPinX, LOW);
 }
 
+void writeFinishedMoving() {
+    Serial.print(endMovementConstant);
+    Serial.flush();
+}
 
 int readAngleCommand() {
   if (Serial.available() > 0) {
@@ -113,6 +119,7 @@ void loop() {
   
   if (angle > -1) {
     setAbsolutePositionNoTwist(angle);
+    writeFinishedMoving();
     delay(500);
   }
 }
