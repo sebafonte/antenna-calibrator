@@ -59,7 +59,7 @@ public:
 	
 	virtual float ReadSignalQuality() {
 		unsigned char buffer[READ_BUFFER_LENGTH];
-		int len = 0, j;
+		int len = 0, j, k;
 		complex value;
 		float sum = 0.0;
 
@@ -73,13 +73,15 @@ public:
 		}
 
 		// Sum complex abs
-		for(j=0; j< len; j+=2) {
-			value = complex((buffer[j] - 127) * 256, (buffer[j + 1] - 127) * 256);
-			sum += abs(value);
+		for(k=0; k< 8; k++) {
+			for(j=0; j< len; j+=2) {
+				value = complex((buffer[j] - 127) * 256, (buffer[j + 1] - 127) * 256);
+				sum += abs(value);
+			}
 		}
 
-		float mean = sum / len;
-		printf("Returned: %d - Readed: %d - Mean: %f\n", result, len, mean);
+		float mean = sum / (len * k);
+		//printf("Returned: %d - Readed: %d - Mean: %f\n", result, len, mean);
 
 		return mean;
 	}

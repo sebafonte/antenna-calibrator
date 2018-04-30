@@ -1,16 +1,17 @@
 char incomingValue[4];
 int index;
 int currentAngle;
-int value=0;
-//float degreesPerStep = 1.8;
+int value = 0;
+// #NOTE: Calculation should be added, involves step configuration and gears
 float degreesPerStep = 360.0 / 661.0;
 const int stepPinX = 8; 
 const int dirPinX = 7; 
-const int stepDelay = 20;
+// #NOTE: This 15ms delay helps avoid step loosing and decent speed
+const int stepDelay = 15;
+const char *endMovementConstant = "*";
 
 void setup() {
   Serial.begin(9600);
-  //Serial.begin(SERIAL_8N1);
   
   incomingValue[0] = 0;
   index = 0;
@@ -24,12 +25,15 @@ void setup() {
   digitalWrite(stepPinX, LOW);
 }
 
+void writeFinishedMoving() {
+    Serial.println(endMovementConstant);
+}
 
 int readAngleCommand() {
   if (Serial.available() > 0) {
     char incomingByte = Serial.read();
-    Serial.print("Readed char: ");
-    Serial.println(incomingByte);
+    //Serial.print("Readed char: ");
+    //Serial.println(incomingByte);
    
     if (!isDigit(incomingByte)) {
       int value = -1;
@@ -38,8 +42,8 @@ int readAngleCommand() {
         incomingValue[index++] = '\n';
         value = atoi(incomingValue);
         
-        Serial.print("READED: ");
-        Serial.println(value);
+        //Serial.print("READED: ");
+        //Serial.println(value);
       }
       index = 0;
       return value;
@@ -53,6 +57,7 @@ int readAngleCommand() {
   return -1;
 }
 
+// #TODO: use a laser to detect initial position
 void setInitialPosition() {
   currentAngle = 0;
 }
@@ -113,6 +118,7 @@ void loop() {
   
   if (angle > -1) {
     setAbsolutePositionNoTwist(angle);
-    delay(500);
+    writeFinishedMoving();
+    delay(200);
   }
 }
