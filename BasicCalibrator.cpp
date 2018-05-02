@@ -38,7 +38,7 @@ public:
 		// Move to the position with maximum amplitude
 		Mover->Move(maxAngle);
 		value = GetQualityValue();
-		//printf("\nFinal angle: %d - Amplitude: %f\n", maxAngle, value);
+		printf("\nFinal angle: %d - Amplitude: %f\n", maxAngle, value);
 
 		// Save last quality value
 		LastQualityValue = value;

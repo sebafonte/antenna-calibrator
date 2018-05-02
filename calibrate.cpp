@@ -21,8 +21,7 @@ const float MINIMUM_QUALITY = -999.0;
 #define MAX_NAMES_BUFFER_SIZE	256
 
 
-void showUsage(void)
-{
+void showUsage(void) {
 	fprintf(stderr,
 		"Help:\nantenna-calibrator, a simple calibrator for antennas for rtl-sdr an airodump.\n\n"
 		"There are two usages for this command:\n"
@@ -52,15 +51,15 @@ int SourceMode() {
 
 int main(int argc, char **argv) {
 	int sourceMode = -1;	
-	AbstractSource *source = NULL;
-	int c;
-	double frequency = -1.0;
 	int bandwidth = -1;
 	int deltaTime = -1;
 	int deltaAngle = -1;
+	AbstractSource *source = NULL;
 	char wlanDevice[MAX_NAMES_BUFFER_SIZE] = "";
 	char wlanName[MAX_NAMES_BUFFER_SIZE] = "";
 	char antennaPort[MAX_NAMES_BUFFER_SIZE] = "";
+	double frequency = -1.0;
+	int c;
 	
 	// Check input parameters
 	while ((c = getopt (argc, argv, "s:d:b:f:w:m:p:a:")) != -1) {
@@ -196,8 +195,8 @@ int main(int argc, char **argv) {
 	}
 
 	// Instanciate calibrator
-	BasicCalibrator *calibrator = new BasicCalibrator((char *) "/dev/ttyUSB0", source);
-	
+	BasicCalibrator *calibrator = new BasicCalibrator(antennaPort, source);
+
 	// Calibrate antenna
 	calibrator->Calibrate(deltaAngle);
 
