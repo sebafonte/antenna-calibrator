@@ -66,7 +66,7 @@ int stepsForAngle(float angle) {
   return angle / degreesPerStep;
 }
 
-int cuadrante(float angle) {
+int quadrant(float angle) {
   if (angle < 180.0)
     return 0;
   else 
@@ -86,7 +86,7 @@ void setAbsolutePositionNoTwist(int angle) {
   }
 
   int steps;
-  if (cuadrante(angle) == cuadrante(currentAngle)) {
+  if (quadrant(angle) == quadrant(currentAngle)) {
     steps = stepsForAngle(newAngle);
   }
   else {
