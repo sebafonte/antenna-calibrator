@@ -5,12 +5,13 @@
  *  on the beginning.
  */
 
-const int stepPinX = 8; 
-const int dirPinX = 7; 
-const int STEPSPORVUELTA = 661;
+const int stepPinX = 7; 
+const int dirPinX = 6; 
+const int STEPSPORVUELTA = 48;
+const int DELAY = 5;
 
 void setup() {
- Serial.begin(9600);
+  Serial.begin(9600);
   pinMode(stepPinX, OUTPUT); 
   pinMode(dirPinX, OUTPUT);
   pinMode(LED_BUILTIN, OUTPUT);
@@ -20,33 +21,27 @@ void setup() {
 }
 
 void loop() {
-  digitalWrite(dirPinX, HIGH);
-  digitalWrite(dirPinX, HIGH);
+  digitalWrite(dirPinX, LOW);
   digitalWrite(LED_BUILTIN, LOW);  
-  delay(2500);
+  delay(10);
   digitalWrite(LED_BUILTIN, HIGH);
   
   for (int i=0; i < STEPSPORVUELTA; i++) {
-    delay(25);
-    digitalWrite(stepPinX, HIGH);
-    delay(25);
+    delay(DELAY);
     digitalWrite(stepPinX, LOW);
+    delay(DELAY);
+    digitalWrite(stepPinX, HIGH);
   }
   
   digitalWrite(LED_BUILTIN, LOW);
-  digitalWrite(dirPinX, LOW);
-  digitalWrite(dirPinX, LOW);
-  delay(2500);
+  digitalWrite(dirPinX, HIGH);
+  delay(10);
   digitalWrite(LED_BUILTIN, HIGH);
 
   for (int i=0; i < STEPSPORVUELTA; i++) {
-    delay(25);
+    delay(DELAY);
     digitalWrite(stepPinX, HIGH);
-    delay(25);
+    delay(DELAY);
     digitalWrite(stepPinX, LOW);
   }
-
-  // Enganchate aca para apagar / resetear la posicion  
-  digitalWrite(LED_BUILTIN, LOW);
-  delay(2500);
 }
