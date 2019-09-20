@@ -30,4 +30,6 @@ Hardware notes:
 	* Used a 4:1 reduction with Nema17 high torque for handling a yagi with a 8mm metal edge to avoid losing steps.
 	
 Deployed:
-	Hehe deployed image at https://cloud.pungas.space/s/bxByCPdN6iF2XSi !
+
+	* Deployed image at: https://cloud.pungas.space/s/bxByCPdN6iF2XSi
+	* Controller box at: https://cloud.pungas.space/s/wKM2YC82oovGvUv
