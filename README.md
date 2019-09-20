@@ -29,3 +29,5 @@ Hardware notes:
 	* 16 position hex rotary switch added for position correction if needed.
 	* Used a 4:1 reduction with Nema17 high torque for handling a yagi with a 8mm metal edge to avoid losing steps.
 	
+Deployed:
+	Hehe deployed image at https://cloud.pungas.space/s/bxByCPdN6iF2XSi !
