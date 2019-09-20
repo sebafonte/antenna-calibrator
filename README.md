@@ -22,7 +22,7 @@ Bad usage examples:
 	* antenna-calibrate -s airodump -d 5000 -w Speedy-Fibra -m wlan0mon -f 100000000
 
 Hardware notes:
-	- Pololu version of the arduino controller module seems to produce too much heat, better use the H bridge.
+	* Pololu version of the arduino controller module seems to produce too much heat, better use the H bridge.
 
 
 
