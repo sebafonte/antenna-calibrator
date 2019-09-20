@@ -3,6 +3,8 @@
  *  Antenna should give on round in a anticlock wise direction, 
  *  then another round back in clockwise direction to get back
  *  on the beginning.
+ *  
+ *  Steps and delay adjusted for m42sp5 by Mitsumi.
  */
 
 const int stepPinX = 7; 

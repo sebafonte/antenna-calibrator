@@ -7,7 +7,7 @@
 
 const int stepPinX = 7; 
 const int dirPinX = 6; 
-const int STEPSPORVUELTA = 48;
+const int STEPSPORVUELTA = 200;
 const int DELAY = 5;
 
 void setup() {
