@@ -26,4 +26,6 @@ Bad usage examples:
 Hardware notes:
 
 	* Pololu version of the arduino controller module seems to produce too much heat, better use the H bridge.
-	* 16 position hex rotary switch added for position correction if needed.	
+	* 16 position hex rotary switch added for position correction if needed.
+	* I used a 4:1 reduction with a Nema17 high torque for handling a yagi with a 8mm metal edge to avoid losing steps.
+	
